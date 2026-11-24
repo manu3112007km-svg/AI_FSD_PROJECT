@@ -2,7 +2,7 @@ import { GoogleGenAI, ThinkingLevel, Type } from '@google/genai';
 import type { AiAnalysisPayload } from '../../types/resqnet.ts';
 import { fallbackAnalyzeIncident } from '../domain/rules.ts';
 
-async function withTimeout<T>(promise: Promise<T>, ms = 6000): Promise<T> {
+async function withTimeout<T>(promise: Promise<T>, ms = 25000): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
@@ -11,6 +11,9 @@ async function withTimeout<T>(promise: Promise<T>, ms = 6000): Promise<T> {
         timer = setTimeout(() => reject(new Error('AI request timed out')), ms);
       }),
     ]);
+  } catch (error) {
+    console.error('Gemini request failed, using rule-based fallback:', error instanceof Error ? error.message : error);
+    throw error;
   } finally {
     if (timer) clearTimeout(timer);
   }

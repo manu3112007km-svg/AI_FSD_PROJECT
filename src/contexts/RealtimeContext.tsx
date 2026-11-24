@@ -39,6 +39,7 @@ export function RealtimeProvider({
     }
 
     let unmounted = false;
+    let failedAttempts = 0;
 
     const connect = () => {
       if (unmounted) return;
@@ -48,6 +49,7 @@ export function RealtimeProvider({
       wsRef.current = ws;
 
       ws.onopen = () => {
+        failedAttempts = 0;
         if (!unmounted) setConnectionState('connected');
       };
 
@@ -65,8 +67,11 @@ export function RealtimeProvider({
 
       ws.onclose = () => {
         if (unmounted) return;
+        failedAttempts += 1;
         setConnectionState('reconnecting');
-        reconnectTimerRef.current = window.setTimeout(connect, 2500);
+        // Serverless deployments have no WebSocket endpoint, so back off instead of retrying every few seconds.
+        const delay = Math.min(2500 * 2 ** (failedAttempts - 1), 60000);
+        reconnectTimerRef.current = window.setTimeout(connect, delay);
       };
 
       ws.onerror = () => {
