@@ -1,0 +1,6 @@
+{
+  "name": "ResQNet – Intelligent Emergency Response & Resource Management System",
+  "description": "AI-powered multi-role emergency coordination, resource allocation, hospital capacity, and real-time incident tracking platform.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
