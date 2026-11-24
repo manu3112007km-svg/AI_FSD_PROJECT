@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import { createApp } from './src/server/app.ts';
 import { attachWebSocketServer } from './src/server/ws.ts';
 
-dotenv.config();
+dotenv.config({ path: ['.env.development.local', '.env.local', '.env'] });
 
 async function startServer() {
   const app = createApp();
