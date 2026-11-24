@@ -5,9 +5,12 @@ import { hashPassword } from '../services/auth.ts';
 import { fallbackAnalyzeIncident } from '../domain/rules.ts';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
+// Vercel Functions only allow writes under /tmp.
 const DB_PATH = process.env.RESQNET_DB_PATH
   ? path.resolve(process.env.RESQNET_DB_PATH)
-  : path.join(DATA_DIR, 'resqnet.db');
+  : process.env.VERCEL
+    ? '/tmp/resqnet.db'
+    : path.join(DATA_DIR, 'resqnet.db');
 
 let dbInstance: DatabaseSync | null = null;
 
